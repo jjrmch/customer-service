@@ -54,6 +54,9 @@ public class ClienteService {
     }
 
     public void eliminar(Long id) {
+        if (!clienteRepository.existsById(id)) {
+            throw new RecursoNoEncontradoException("Cliente no encontrado con id: " + id);
+        }
         clienteRepository.deleteById(id);
     }
 
