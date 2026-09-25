@@ -25,6 +25,16 @@ public class ClienteService {
                 .toList();
     }
 
+    public List<ClienteResponse> listarPorBusqueda(String q) {
+        if (q == null || q.isBlank()) {
+            return List.of();
+        }
+        return clienteRepository.findByNombreContainingIgnoreCaseOrEmailContainingIgnoreCase(q, q)
+                .stream()
+                .map(this::aResponse)
+                .toList();
+    }
+
     public ClienteResponse buscarPorId(Long id) {
         Cliente cliente = clienteRepository.findById(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Cliente no encontrado con id: " + id));

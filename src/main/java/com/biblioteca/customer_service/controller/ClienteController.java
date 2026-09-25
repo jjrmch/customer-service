@@ -24,6 +24,11 @@ public class ClienteController {
         return clienteService.listarTodos();
     }
 
+    @GetMapping("/buscar")
+    public List<ClienteResponse> buscarClientes(@RequestParam String q) {
+        return clienteService.listarPorBusqueda(q);
+    }
+
     @GetMapping("/{id}")
     public ClienteResponse obtenerCliente(@PathVariable Long id) {
         return clienteService.buscarPorId(id);

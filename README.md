@@ -1,6 +1,10 @@
 # Customer Service
 
+![CI](https://github.com/jjrmch/customer-service/actions/workflows/ci.yml/badge.svg)
+
 Microservicio de clientes de la plataforma de gestión de biblioteca. Hace el CRUD de clientes y permite buscarlos por email, que es lo que usan otros servicios del ecosistema para validar o enriquecer sus operaciones (por ejemplo, transactions-service al registrar una venta o un alquiler).
+
+Valida el JWT por su cuenta: todos los endpoints de clientes exigen un token con rol `ADMIN` o `BIBLIOTECARIO`, porque son datos internos de gestión.
 
 Es el servicio más sencillo del sistema y me sirvió para asentar la estructura base que luego repetí en el resto de microservicios: paquetes de controller, service, repository, dto y manejo global de excepciones.
 
@@ -9,12 +13,14 @@ Es el servicio más sencillo del sistema y me sirvió para asentar la estructura
 - CRUD de clientes (nombre, email, teléfono)
 - Búsqueda por email
 - Validación de datos de entrada (`@NotBlank`, `@Email`)
-- Swagger UI en `/swagger-ui.html`
+- Seguridad con JWT (HS256): solo ADMIN y BIBLIOTECARIO, con 401/403 en JSON
+- Swagger UI en `/swagger-ui.html` con botón Authorize
 
 ## Stack
 
 - Java 17
 - Spring Boot 4.1
+- Spring Security (OAuth2 Resource Server) + Nimbus JWT
 - Spring Cloud 2025.1.2 (Eureka client)
 - Spring Data JPA
 - PostgreSQL
@@ -28,7 +34,7 @@ Necesitas PostgreSQL y el discovery-service (Eureka) levantados. Puedes levantar
 ./mvnw spring-boot:run
 ```
 
-La configuración de la base de datos se hace por variables de entorno:
+La configuración se hace por variables de entorno:
 
 | Variable | Descripción |
 |---|---|
@@ -36,8 +42,11 @@ La configuración de la base de datos se hace por variables de entorno:
 | `DB_USER` | Usuario de PostgreSQL |
 | `DB_PASSWORD` | Contraseña de PostgreSQL |
 | `EUREKA_URL` | URL del servidor Eureka (default `http://localhost:8761/eureka/`) |
+| `JWT_SECRET` | Secreto compartido para validar los JWT (mínimo 32 caracteres). **Debe ser el mismo que usa auth-service** |
 
 ## Endpoints
+
+Todos exigen `Authorization: Bearer <token>` con rol ADMIN o BIBLIOTECARIO.
 
 | Método | Ruta | Descripción |
 |---|---|---|
@@ -56,6 +65,7 @@ La plataforma completa se compone de:
 - [gateway-service](https://github.com/jjrmch/gateway-service) — API Gateway (punto de entrada, `localhost:8080`)
 - [catalog-service](https://github.com/jjrmch/catalog-service) — catálogo de libros y stock
 - [transactions-service](https://github.com/jjrmch/transactions-service) — ventas, alquileres, reservas y multas
+- [auth-service](https://github.com/jjrmch/auth-service) — registro, login y emisión de JWT
 - [biblioteca-frontend](https://github.com/jjrmch/biblioteca-frontend) — panel web en React
 - [biblioteca-deploy](https://github.com/jjrmch/biblioteca-deploy) — docker-compose con el stack completo
 
@@ -63,6 +73,7 @@ La plataforma completa se compone de:
 
 - No hay tests de negocio todavía, solo el test de contexto de Spring.
 - El listado de clientes no tiene paginación.
+- Un CLIENTE no puede consultar sus propios datos todavía; requeriría comprobar que el email del token coincide con el del recurso.
 
 ## Licencia
 
