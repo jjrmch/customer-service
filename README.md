@@ -1,5 +1,7 @@
 # Customer Service
 
+![CI](https://github.com/jjrmch/customer-service/actions/workflows/ci.yml/badge.svg)
+
 Microservicio de clientes de la plataforma de gestión de biblioteca. Hace el CRUD de clientes y permite buscarlos por email, que es lo que usan otros servicios del ecosistema para validar o enriquecer sus operaciones (por ejemplo, transactions-service al registrar una venta o un alquiler).
 
 Valida el JWT por su cuenta: todos los endpoints de clientes exigen un token con rol `ADMIN` o `BIBLIOTECARIO`, porque son datos internos de gestión.
