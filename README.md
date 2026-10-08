@@ -76,7 +76,7 @@ La plataforma completa se compone de:
 ./mvnw verify
 ```
 
-17 tests: unitarios del servicio (Mockito) y de integración de la seguridad (`@SpringBootTest` + MockMvc + Testcontainers con PostgreSQL). Necesita Docker en marcha y se ejecutan también en CI (badge arriba).
+30 tests: unitarios del servicio (Mockito) e integración del CRUD y de la seguridad (`@SpringBootTest` + MockMvc + Testcontainers con PostgreSQL). Necesita Docker en marcha y se ejecutan también en CI (badge arriba).
 
 ## Por mejorar
 
